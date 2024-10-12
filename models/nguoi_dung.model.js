@@ -2,7 +2,11 @@ const db = require('./db');
 
 const nguoi_dung_schema = new db.mongooes.Schema(
     {
-        tenLoai: { type: String, required: true }
+        email:{},
+        matKhau:{},
+        tenNguoiDung:{},
+        soDienThoai:{},
+        loai:
     },
     {
         collection: 'tb_nguoi_dung'
