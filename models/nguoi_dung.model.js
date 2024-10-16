@@ -6,7 +6,8 @@ const nguoi_dung_schema = new db.mongooes.Schema(
         matKhau:{},
         tenNguoiDung:{},
         soDienThoai:{},
-        loai:
+        // địa chỉ chi tiết 
+        loai:{}
     },
     {
         collection: 'tb_nguoi_dung'

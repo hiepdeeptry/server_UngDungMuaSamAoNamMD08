@@ -7,6 +7,7 @@ const { createUserWithEmailAndPassword, signInWithEmailAndPassword } = require('
 const { auth } = require('../firebaseConfig');
 const notifier = require('node-notifier');
 const path = require('path');
+const { error } = require('console');
 
 
 exports.auth = (req, res) => {
@@ -24,16 +25,29 @@ exports.auth = (req, res) => {
             sound: true, // Tùy chọn để phát âm thanh thông báo,
             appID:"Shop bán áo MD08",
             icon: path.join(__dirname, '../public/images/logoMD08_128x128.png'),
+            wait:true,
           });
         res.redirect('/');
       })
       .catch((error) => {
+
+        const errorCode = error.code;
+        const errorMessage = getFirebaseErrorMessage(errorCode);
+
         notifier.notify({
             title: 'Lỗi đăng nhập',
-            message: 'Sai tài khoản hoặc mật khẩu\nĐăng nhập thất bại! Vui lòng thử lại.',
-            sound: true // Tùy chọn để phát âm thanh thông báo
+            message: errorMessage,
+            sound: true, // Tùy chọn để phát âm thanh thông báo,
+            appID:"Shop bán áo MD08",
+            icon: path.join(__dirname, '../public/images/logoMD08_128x128.png'),
+            wait:true,
           });
+
+       
+
+        console.log(errorMessage);
         return res.render('login/index');
+
       });
     }else if(type === 'register'){
         createUserWithEmailAndPassword(auth, email, password)
@@ -42,31 +56,77 @@ exports.auth = (req, res) => {
           notifier.notify({
             title: 'Thành công',
             message: 'Tạo tài khoản thành công!\n Chào mừng bạn.',
-            sound: true // Tùy chọn để phát âm thanh thông báo
+            sound: true, // Tùy chọn để phát âm thanh thông báo,
+            appID:"Shop bán áo MD08",
+            icon: path.join(__dirname, '../public/images/logoMD08_128x128.png'),
+            wait:true,
           });
           res.redirect('/auth')
         })
         .catch((error) => {
+
+          const errorCode = error.code;
+          const errorMessage = getFirebaseErrorMessage(errorCode);
           // Xử lý lỗi
           notifier.notify({
             title: 'Lỗi đăng ký',
-            message: 'Sai tài khoản hoặc mật khẩu\nĐăng nhập thất bại! Vui lòng thử lại.',
-            sound: true // Tùy chọn để phát âm thanh thông báo
+            message: errorMessage,
+            sound: true, // Tùy chọn để phát âm thanh thông báo,
+            appID:"Shop bán áo MD08",
+            icon: path.join(__dirname, '../public/images/logoMD08_128x128.png'),
+            wait:true,
           });
-        return  res.status(400).send(error.message);
+          // return res.render('login/index');
+        
+
         });
     }else{
         res.status(400).send('Tham số type không hợp lệ');
     }
     
-    
 
-    
+
+
   };
 
   exports.showForm = (req, res, next) => {
-    res.render('login/index')
+    res.render('login/index',{error:false})
 }
+
+function getFirebaseErrorMessage(errorCode) {
+    switch (errorCode) {
+        case 'auth/invalid-email':
+            return 'Địa chỉ email không hợp lệ.';
+        case 'auth/user-disabled':
+            return 'Tài khoản đã bị vô hiệu hóa.';
+        case 'auth/user-not-found':
+            return 'Tài khoản không tồn tại.';
+        case 'auth/wrong-password':
+            return 'Mật khẩu không chính xác.';
+        case 'auth/email-already-in-use':
+            return 'Email đã được sử dụng cho tài khoản khác.';
+        case 'auth/weak-password':
+            return 'Mật khẩu quá yếu. Vui lòng nhập mật khẩu mạnh hơn.';
+        case 'auth/too-many-requests':
+            return 'Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau.';
+        case 'auth/credential-already-in-use':
+            return 'Thông tin xác thực đã được sử dụng cho tài khoản khác.';
+        case 'auth/invalid-credential':
+            return 'Tài khoản hoặc mật khẩu không chính xác.';
+        case 'auth/operation-not-allowed':
+            return 'Phương thức xác thực này đã bị vô hiệu hóa.';
+        case 'auth/network-request-failed':
+            return 'Lỗi mạng. Vui lòng kiểm tra kết nối internet.';
+        case 'auth/account-exists-with-different-credential':
+            return 'Tài khoản đã tồn tại với thông tin xác thực khác.';
+        case 'auth/requires-recent-login':
+            return 'Cần đăng nhập lại để xác nhận thông tin.';
+        default:
+            return 'Đã xảy ra lỗi. Vui lòng thử lại.';
+    }
+}
+
+
 
 //   exports.register = (req, res) => {
 //     const { email, password } = req.body;
