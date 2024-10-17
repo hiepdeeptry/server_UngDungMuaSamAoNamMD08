@@ -7,10 +7,23 @@ var logger = require('morgan');
 // var firebase = require('firebase');
 
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login');
 var sanPhamRouter = require('./routes/san_pham');
+var donHangRouter = require('./routes/don_hang');
+var khuyenMaiRouter = require('./routes/khuyen_mai');
+var loaiHangRouter = require('./routes/loai_hang');
+var thongBaoRouter = require('./routes/thong_bao');
+var nguoiDungRouter = require('./routes/nguoi_dung');
+
+
+// API
+
+var sanPhamApiRouter = require('./routes/apis/san_pham.api');
+var donHangApiRouter = require('./routes/apis/don_hang.api');
+var khuyenMaiApiRouter = require('./routes/apis/khuyen_mai.api');
+var loaiHangApiRouter = require('./routes/apis/loai_hang.api');
+var thongBaoApiRouter = require('./routes/apis/thong_bao.api');
+var nguoiDungApiRouter = require('./routes/apis/nguoi_dung.api');
 
 var app = express();
 
@@ -25,10 +38,25 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/', sanPhamRouter);
 app.use('/auth', loginRouter);
 app.use('/products',sanPhamRouter);
+app.use('/orders',donHangRouter);
+app.use('/vouchers',khuyenMaiRouter);
+app.use('/categorys',loaiHangRouter);
+app.use('/notifys',thongBaoRouter);
+app.use('/users',nguoiDungRouter);
+
+//API
+app.use('/api/products',sanPhamApiRouter);
+app.use('/api/orders',donHangApiRouter);
+app.use('/api/vouchers',khuyenMaiApiRouter);
+app.use('/api/categorys',loaiHangApiRouter);
+app.use('/api/notifys',thongBaoApiRouter);
+app.use('/api/users',nguoiDungApiRouter);
+
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

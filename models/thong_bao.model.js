@@ -11,6 +11,6 @@ const thong_bao_schema = new db.mongooes.Schema(
     }
 );
 
-let sanPhamModel = db.mongooes.model('sanPhamModel', thong_bao_schema);
+let thongBoaModel = db.mongooes.model('thongBoaModel', thong_bao_schema);
 
-module.exports = { sanPhamModel };
+module.exports = { thongBoaModel };

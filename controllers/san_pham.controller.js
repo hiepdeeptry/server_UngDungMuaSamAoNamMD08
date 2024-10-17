@@ -7,7 +7,7 @@ exports.list_san_pham = async (req, res, next) => {
   try {
     var listProducts = await myModel.sanPhamModel.find();
     return res.status(200).json(listProducts);
-    
+
   } catch (error) {
     return res.status(error.status).json({
       msg: error.message,
@@ -17,16 +17,42 @@ exports.list_san_pham = async (req, res, next) => {
 
 // Thêm sản phẩm
 exports.add_san_pham = async (req, res, next) => {
+ 
   if (req.method == "POST") {
+
+    let file = req.file;
+
+    let objSanPham = new myModel.sanPhamModel();
+    objSanPham.tenSanPham = req.body.tenSanPham;
+    objSanPham.kichCo = req.body.kichCo;
+    objSanPham.mauSac = req.body.mauSac;
+    objSanPham.moTa = req.body.moTa;
+    objSanPham.idLoaiHang = req.body.idLoaiHang;
+    objSanPham.soLuong = req.body.soLuong;
+    objSanPham.gia = req.body.gia;
+
     try {
+      console.log(file);
+      fs.renameSync(file.path, "./public/images/" + file.originalname);
+      let url_file = '/images/' + file.originalname;
+      objSanPham.anh = url_file;
+    } catch (error) {
+      console.log(error.message);
+      return res.send("Lỗi")
+    }
+
+    try {
+
+      let newSanPham = await objSanPham.save();
       return res.status(201).json({
-        msg: "Thêm sản phẩm thành công",
+        msg: "Thêm sản phẩm thành công",newSanPham
       });
     } catch (error) {
-      return res.status(error.status).json({
-        msg: error.message,
-      });
+      return res.status(400).send(error.message);
     }
+
+
+
   }
 };
 
@@ -58,3 +84,5 @@ exports.delete_san_pham = async (req, res, next) => {
   }
   res.status(200).json({ msg: "xóa" });
 };
+
+

@@ -1,5 +1,6 @@
 var multer = require('multer');
 var fs = require('fs');
+var loaiHangMD = require('../models/loai_hang.model');
 
 
 
@@ -20,11 +21,14 @@ exports.list_loai_hang = async (req, res, next) => {
 // Thêm loại hàng
 exports.add_loai_hang = async (req, res, next) => {
 
+    let objLoaiHang = new loaiHangMD.loaiHangModel();
+    objLoaiHang.tenLoai = req.body.tenLoai;
+
 
     if (req.method == 'POST') {
 
         try {
-
+            let newLoaiHang = await objLoaiHang.save();
             return res.status(201).json({
                 msg: "Thêm loại hàng thành công"
             });
